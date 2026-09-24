@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#4C6EF7">
+<title>音乐</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<div id="app">
+  <header class="app-top">
+    <h1 id="page-title">正在播放</h1>
+    <div id="head-extra"></div>
+  </header>
+
+  <main>
+    <section id="page-now" class="page active">
+      <div class="now-bg" id="now-bg"></div>
+      <div class="now-content">
+        <div class="cover-wrap" id="cover-wrap"></div>
+        <div class="song-title" id="song-title">未播放</div>
+        <div class="song-sub" id="song-sub">点下方 + 添加音乐</div>
+
+        <div class="lyric-placeholder">
+          <div class="lyric-hint">暂无歌词</div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progress-bar">
+            <div class="progress-buffer" id="progress-buffer"></div>
+            <div class="progress-fill" id="progress-fill">
+              <div class="progress-thumb"></div>
+            </div>
+          </div>
+          <div class="time-row">
+            <span id="time-cur">00:00</span>
+            <span id="time-total">00:00</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="ctrl-btn" id="btn-mode" data-action="cycle-mode">顺序</button>
+          <button class="ctrl-btn big" data-action="prev">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg>
+          </button>
+          <button class="ctrl-btn play" id="btn-play" data-action="toggle-play">
+            <svg id="icon-play" viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="icon-pause" viewBox="0 0 24 24" width="30" height="30" fill="currentColor" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </button>
+          <button class="ctrl-btn big" data-action="next">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg>
+          </button>
+          <button class="ctrl-btn" id="btn-volume" data-action="volume">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M4 10v4h3l4 4V6L7 10H4zm11.5 2c0-1.77-1-3.29-2.5-4.03v8.05c1.5-.73 2.5-2.25 2.5-4.02zM13 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          </button>
+        </div>
+
+        <div class="volume-wrap" id="volume-wrap" style="display:none">
+          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+      </div>
+    </section>
+
+    <section id="page-list" class="page">
+      <button class="add-music-btn" data-action="add-music">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        添加音乐
+      </button>
+      <div class="sort-bar" id="sort-bar"></div>
+      <div id="playlist-content"></div>
+    </section>
+
+    <section id="page-me" class="page">
+      <div class="me-sec">外观</div>
+      <div class="me-list">
+        <div class="me-row" data-action="open-theme">
+          <span class="icon-sq sm" style="background:rgba(76,110,247,.14);color:#4C6EF7">色</span>
+          <span class="me-row-text">主题颜色</span>
+          <span id="theme-hint" class="me-row-sub">默认蓝</span>
+          <span class="arrow">›</span>
+        </div>
+        <div class="me-row" data-action="open-bg">
+          <span class="icon-sq sm" style="background:rgba(236,72,153,.14);color:#EC4899">图</span>
+          <span class="me-row-text">播放页背景</span>
+          <span id="bg-hint" class="me-row-sub">无</span>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+      <div class="me-sec">我的设备</div>
+      <div class="me-list">
+        <div class="me-row" data-action="edit-device">
+          <span class="icon-sq sm" style="background:rgba(76,110,247,.14);color:#4C6EF7">设</span>
+          <span id="user-device" class="me-row-text"></span>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+      <div class="me-sec">数据管理</div>
+      <div class="me-list">
+        <div class="me-row" data-action="cloud-sync"><span class="icon-sq sm" style="background:rgba(48,164,108,.14);color:#30A46C">云</span><span class="me-row-text">云同步</span><span class="arrow">›</span></div>
+        <div class="me-row" data-action="cache-manage"><span class="icon-sq sm" style="background:rgba(76,110,247,.14);color:#4C6EF7">缓</span><span class="me-row-text">缓存管理</span><span id="cache-hint" class="me-row-sub">0 首</span><span class="arrow">›</span></div>
+        <div class="me-row" data-action="export"><span class="icon-sq sm" style="background:rgba(76,110,247,.14);color:#4C6EF7">出</span><span class="me-row-text">导出备份</span><span class="arrow">›</span></div>
+        <div class="me-row" data-action="clear-all"><span class="icon-sq sm" style="background:rgba(229,72,77,.14);color:#E5484D">清</span><span class="me-row-text">清空所有数据</span><span class="arrow">›</span></div>
+      </div>
+      <div class="me-sec">关于</div>
+      <div class="card me-card">
+        音乐播放器 · 本地版<br>
+        音频文件存在手机本地或云端，歌单同步到服务器。
+      </div>
+    </section>
+  </main>
+
+  <div class="mini-bar" id="mini-bar" style="display:none">
+    <div class="mini-cover" id="mini-cover">♪</div>
+    <div class="mini-info">
+      <div class="mini-title" id="mini-title">未播放</div>
+      <div class="mini-sub" id="mini-sub"></div>
+    </div>
+    <button class="mini-btn" data-action="toggle-play" id="mini-play">
+      <svg class="mini-icon-play" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="mini-icon-pause" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="mini-btn" data-action="next">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg>
+    </button>
+  </div>
+
+  <nav class="tabbar">
+    <button class="tab on" data-action="tab" data-page="now">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+      正在播放
+    </button>
+    <button class="tab" data-action="tab" data-page="list">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      播放列表
+    </button>
+    <button class="tab" data-action="tab" data-page="me">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>
+      我的
+    </button>
+  </nav>
+
+  <div id="mask" class="mask" data-action="close-sheet"></div>
+  <div id="sheet" class="sheet"></div>
+  <div id="modal" class="modal"></div>
+  <div id="toast" class="toast"></div>
+
+  <input type="file" id="music-file" accept="audio/*" multiple style="display:none">
+  <input type="file" id="bg-file" accept="image/*" style="display:none">
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
